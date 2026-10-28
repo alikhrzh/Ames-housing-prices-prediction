@@ -1,41 +1,72 @@
-# 🏠 Ames Housing Price Prediction: Regression Analysis & Diagnostics
+# Ames Housing Price Prediction
 
-This project focuses on predicting residential house prices in Ames, Iowa, using the Ames Housing dataset. The primary goal was to demonstrate a full Machine Learning pipeline, from Exploratory Data Analysis (EDA) to rigorous model evaluation and diagnostic testing.
+A compact regression study using the Ames Housing dataset to compare a simple
+baseline, a larger linear model, and Lasso regularization. The notebook covers
+data inspection, preprocessing, feature selection, evaluation, and residual
+diagnostics.
 
-## 🏆 Key Results
-I compared three different approaches to find the most balanced model:
+> **Status:** educational data-science project. The reported numbers come from
+> one reproducible train/test split and should not be interpreted as production
+> performance or as a benchmark against state-of-the-art housing models.
+
+## Results
+
+The target is log-transformed `SalePrice`. The notebook reports:
 
 | Model | Features | Train R² | Test R² | Test MSE |
-| :--- | :--- | :--- | :--- | :--- |
-| **Linear Regression** | **10 Selected** | **0.798** | **0.835** | **0.028** |
-| LassoCV (Regularization) | Automated | 0.725 | 0.798 | 0.034 |
-| Linear Regression | 2 Features | 0.719 | 0.775 | 0.038 |
+|---|---:|---:|---:|---:|
+| Linear Regression | 10 selected | 0.798 | 0.835 | 0.028 |
+| LassoCV | automated selection | 0.725 | 0.798 | 0.034 |
+| Linear Regression | 2 | 0.719 | 0.775 | 0.038 |
 
-**Key Finding:** The 10-feature Linear Regression model achieved the highest accuracy ($R^2 = 0.835$), demonstrating strong predictive power and excellent generalization to unseen data.
+The 10-feature model produced the strongest test score in this split. Its test
+R² being higher than its train R² does **not** prove the absence of overfitting;
+the difference can arise from sampling variation. Repeated cross-validation or
+an untouched external test set would provide stronger evidence.
 
----
+## Workflow
 
-## 📊 Methodology & Workflow
+1. Load the public `house_prices` dataset through `fetch_openml`.
+2. Inspect missing values, distributions, and correlations.
+3. Log-transform the target to reduce skew.
+4. Establish a two-feature linear-regression baseline.
+5. Fit a 10-feature linear model and a `LassoCV` model.
+6. Compare MSE and R² on a fixed split (`random_state=42`).
+7. Inspect residual plots and a Q–Q plot for model-assumption diagnostics.
 
-### 1. Data Preprocessing & EDA
-- **Handling Missing Values:** Imputed or removed missing data based on feature significance.
-- **Log Transformation:** Applied log-transformation to `SalePrice` to handle skewness and normalize the distribution.
-- **Feature Selection:** Identified top predictors including Overall Quality (`OverallQual`), Living Area (`GrLivArea`), and Garage capacity.
+Residual diagnostics are evidence to inspect, not a guarantee that all linear
+model assumptions hold. Tail deviations indicate that unusual properties remain
+harder to represent with a simple linear specification.
 
-### 2. Modeling Strategy
-- **Baseline:** Started with a simple 2-feature model to establish a performance floor.
-- **Refinement:** Scaled features using `StandardScaler` and expanded to 10 high-correlation variables.
-- **Regularization:** Implemented `LassoCV` with 5-fold cross-validation to perform automated feature selection and prevent overfitting.
+## Reproduce the notebook
 
-### 3. Model Diagnostics (The "Internship-Ready" Part)
-To ensure the model's reliability, I performed:
-- **Residual Analysis:** Verified homoscedasticity (constant variance of errors).
-- **Normal Q-Q Plot:** Confirmed that residuals follow a normal distribution, validating the assumptions of linear regression.
+Python 3.11 is recommended.
 
----
+```bash
+git clone https://github.com/alikhrzh/Ames-housing-prices-prediction.git
+cd Ames-housing-prices-prediction
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+jupyter lab Ames_Housing_Price_Prediction.ipynb
+```
 
-## 📈 Conclusion
+The first data-loading step requires network access to OpenML. Restart the
+kernel and run all cells from top to bottom when validating the results.
 
-* **Generalization:** The model demonstrated strong performance on the test set ($R^2=0.835$), slightly exceeding training metrics, which confirms the absence of overfitting.
-* **Residual Analysis Insights:** The diagnostics show that errors are randomly distributed around zero. Minor deviations in the "tails" of the Q-Q plot suggest that unique, luxury properties remain the most challenging to predict with a linear approach.
-* **Lasso Performance:** While LassoCV provided a robust baseline, the unregularized
+## Limitations and next steps
+
+- Results currently use one train/test split rather than repeated nested cross-validation.
+- Feature selection is partly informed by exploratory correlation analysis.
+- The study does not compare tree-based or boosting baselines.
+- No prediction-interval or subgroup error analysis is included.
+- The notebook retains outputs for review; a clean automated execution check is not yet configured.
+
+Useful next experiments are a leakage-safe preprocessing pipeline, repeated
+cross-validation, comparison with gradient boosting, and error analysis by
+property price range.
+
+## License
+
+The project code is available under the MIT License. The dataset is retrieved
+from OpenML and remains subject to its source metadata and terms.
