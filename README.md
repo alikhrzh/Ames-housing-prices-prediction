@@ -54,6 +54,29 @@ jupyter lab Ames_Housing_Price_Prediction.ipynb
 The first data-loading step requires network access to OpenML. Restart the
 kernel and run all cells from top to bottom when validating the results.
 
+## Repository structure
+
+```text
+Ames_Housing_Price_Prediction.ipynb  complete analysis and model comparison
+requirements.txt                    reproducibility dependencies
+README.md                           results, workflow, and limitations
+LICENSE                             MIT license for the project code
+```
+
+This is intentionally a notebook-sized educational repository:
+
+- `Ames_Housing_Price_Prediction.ipynb` contains data loading, inspection,
+  preprocessing, feature analysis, model fitting, metrics, and residual plots
+  in one executable narrative.
+- `requirements.txt` declares the Python packages needed to reproduce the
+  notebook; the dataset itself is fetched from OpenML rather than committed.
+- `README.md` reports the saved results and their interpretation without
+  treating one train/test split as a production benchmark.
+
+If the project grows, the next structural step should be a leakage-safe
+preprocessing pipeline in `src/` plus an automated evaluation script and tests.
+The current size does not justify those extra layers yet.
+
 ## Limitations and next steps
 
 - Results currently use one train/test split rather than repeated nested cross-validation.
